@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/DV-Lab/zuni-backend/util"
+	"github.com/HCMUT-UWC-2-0/backend/util"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )

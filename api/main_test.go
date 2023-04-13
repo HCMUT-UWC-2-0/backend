@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	db "github.com/DV-Lab/zuni-backend/db/sqlc"
-	"github.com/DV-Lab/zuni-backend/util"
+	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
+	"github.com/HCMUT-UWC-2-0/backend/util"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/require"

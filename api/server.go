@@ -3,9 +3,9 @@ package api
 import (
 	"fmt"
 
-	db "github.com/DV-Lab/zuni-backend/db/sqlc"
-	"github.com/DV-Lab/zuni-backend/token"
-	"github.com/DV-Lab/zuni-backend/util"
+	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
+	"github.com/HCMUT-UWC-2-0/backend/util"
+	"github.com/HCMUT-UWC-2-0/backend/token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -45,21 +45,15 @@ func (server *Server) Start(address string) error {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 	router.Use(CORSMiddleware())
-	router.POST("/api/student/create", server.createStudent)
-	router.POST("/api/admin/create", server.createAdmin)
-	router.POST("/auth/login", server.loginAccount)
+	// router.POST("/api/admin/create", server.createAdmin)
+	// router.POST("/auth/login", server.loginAccount)
 
 	// TODO: this api need authentication + authorization
-	router.POST("/api/degree/create", server.createDegree)
+	// router.POST("/api/degree/create", server.createDegree)
 
 
 
-	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
-	authRoutes.GET("/api/account/:account_id", server.getAccount)
-	authRoutes.PATCH("/api/account/update/password", server.updatePasswordAccount)
+	// authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
-	authRoutes.GET("/api/degree/:citizenID", server.getDegree)
-	authRoutes.PATCH("/api/degree/update/info", server.updateDegreeInfo)
-	authRoutes.DELETE("/api/degree", server.deleteDegree)
 	server.router = router
 }

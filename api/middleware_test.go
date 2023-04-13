@@ -7,8 +7,7 @@ import (
 	"testing"
 	"time"
 
-	db "github.com/DV-Lab/zuni-backend/db/sqlc"
-	"github.com/DV-Lab/zuni-backend/token"
+	"github.com/HCMUT-UWC-2-0/backend/token"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
@@ -18,10 +17,10 @@ func addAuthorization(
 	request *http.Request,
 	tokenMaker token.Maker,
 	authorizationType string,
-	accountInfo token.AccountInfo,
+	backOfficerInfo token.BackOfficerInfo,
 	duration time.Duration,
 ) {
-	token, err := tokenMaker.CreateToken(accountInfo, duration)
+	token, err := tokenMaker.CreateToken(backOfficerInfo, duration)
 	require.NoError(t, err)
 	authorizationHeader := fmt.Sprintf("%s %s", authorizationType, token)
 	request.Header.Set(authorizationHeaderKey, authorizationHeader)
@@ -35,9 +34,9 @@ func TestAuthMiddleWare(t *testing.T) {
 		{
 			name: "OK",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, authorizationBearer, token.AccountInfo{
-					AccountId: "12345",
-					Role: db.RoleTypeADMIN,
+				addAuthorization(t, request, tokenMaker, authorizationBearer, token.BackOfficerInfo{
+					Email: "string@gmail.com",
+					Ssn: "12345",
 				}, time.Minute)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -57,9 +56,9 @@ func TestAuthMiddleWare(t *testing.T) {
 		{
 			name: "UnsupportedAuthorization",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, "unsupported", token.AccountInfo{
-					AccountId: "12345",
-					Role: db.RoleTypeADMIN,
+				addAuthorization(t, request, tokenMaker, "unsupported", token.BackOfficerInfo{
+					Email: "string@gmail.com",
+					Ssn: "12345",
 				}, time.Minute)
 
 			},
@@ -71,9 +70,9 @@ func TestAuthMiddleWare(t *testing.T) {
 		{
 			name: "InvalidAuthorizationFormat",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, "",token.AccountInfo{
-					AccountId: "12345",
-					Role: db.RoleTypeADMIN,
+				addAuthorization(t, request, tokenMaker, "",token.BackOfficerInfo{
+					Email: "string@gmail.com",
+					Ssn: "12345",
 				}, time.Minute)
 
 			},
@@ -85,9 +84,9 @@ func TestAuthMiddleWare(t *testing.T) {
 		{
 			name: "ExpiredToken",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, "", token.AccountInfo{
-					AccountId: "12345",
-					Role: db.RoleTypeADMIN,
+				addAuthorization(t, request, tokenMaker, "", token.BackOfficerInfo{
+					Email: "string@gmail.com",
+					Ssn: "12345",
 				}, -time.Minute)
 
 			},

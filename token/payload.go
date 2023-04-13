@@ -4,26 +4,25 @@ import (
 	"errors"
 	"time"
 
-	db "github.com/DV-Lab/zuni-backend/db/sqlc"
 	"github.com/google/uuid"
 )
 
 type Payload struct {
-	ID          uuid.UUID   `json:"id"`
-	AccountInfo AccountInfo `json:"student_info"`
-	IssuedAt    time.Time   `json:"issued_at"`
-	ExpiredAt   time.Time   `json:"expired_at"`
+	ID              uuid.UUID       `json:"id"`
+	BackOfficerInfo BackOfficerInfo `json:"back_officer_info"`
+	IssuedAt        time.Time       `json:"issued_at"`
+	ExpiredAt       time.Time       `json:"expired_at"`
 }
 
 // MetaData  interface  `json:"meta_data"`
-type AccountInfo struct {
-	AccountId string      `json:"account_id"`
-	Role      db.RoleType `json:"role"`
+type BackOfficerInfo struct {
+	Email string `json:"email"`
+	Ssn   string `json:"ssn"`
 }
 
 //type MetaData interface{}
 
-func NewPayload(accountInfo AccountInfo, duration time.Duration) (*Payload, error) {
+func NewPayload(boi BackOfficerInfo, duration time.Duration) (*Payload, error) {
 	tokenID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -31,7 +30,7 @@ func NewPayload(accountInfo AccountInfo, duration time.Duration) (*Payload, erro
 
 	payload := &Payload{
 		ID:          tokenID,
-		AccountInfo: accountInfo,
+		BackOfficerInfo: boi,
 		IssuedAt:    time.Now(),
 		ExpiredAt:   time.Now().Add(duration),
 	}

@@ -1,10 +1,11 @@
 # Gin template
 
 ## Before start the project
+
 - Name of module is placed in `go.mod`, you need rename it.
 - Fix all imports in all files with "re-named" module
 - This project use **viper** for loading configs, make sure that you checked them
-  - `app.env` 
+  - `app.env`
   - `.docker.env`
   - `docker-compose.dev`
   - `docker-compose`
@@ -42,35 +43,41 @@
  ┗ 📜 app.env              
 ```
 
-
 ## How to start this project?
 
 1. Install dependencies
-```bash
-go get -u -v  all
-```
+
+  ```bash
+  go get -u -v  all
+  ```
 
 2. Init postgres
-```bash
-make bootstrap
-```
-3. Init schema
-```bash
-make migrateup
-```
-4.  Create sample data data (optional)
 
-```bash
-make seed
-```
+  ```bash
+  make bootstrap
+  ```
+
+3. Init schema
+
+  ```bash
+  make migrateup
+  ```
+
+4. Create sample data data (optional)
+
+  ```bash
+  make seed
+  ```
+
 5. Start the app:
-```bash
-make server
-```
+
+  ```bash
+  make server
+  ```
 
 6. Access [adminer](http://localhost:8080/) and login follows info in **.docker.env** file.
 
-## Some helpful commands:
+## Some helpful commands
 
 - Drop all db:
   `make migratedown`
@@ -83,7 +90,7 @@ make server
 make sqlc && make mock
 ```
 
-# Simple rules when using Git.
+## Simple rules when using Git
 
 1. For development, you have to create a new branch like this: `feat/your_feature`. Eg: `feat/customer`
 2. Before merging your branch to `main`,
@@ -98,7 +105,7 @@ make sqlc && make mock
 
 4. Before coding, you have to make sure that the source code is the latest version, use `git checkout main && git pull main`.
 
-# Merge request locally
+## Merge request locally
 
 1. `git fetch origin`
 

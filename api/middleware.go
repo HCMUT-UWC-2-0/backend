@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+    "github.com/HCMUT-UWC-2-0/backend/token"
 
-	"github.com/DV-Lab/zuni-backend/token"
 	"github.com/gin-gonic/gin"
 )
 

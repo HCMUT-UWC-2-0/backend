@@ -16,7 +16,7 @@ VALUES
 RETURNING *;
 
 
--- name: GetAdmin :one
+-- name: GetBackOfficer :one
 SELECT * FROM "BackOfficers" 
 WHERE email = $1 LIMIT 1;
 

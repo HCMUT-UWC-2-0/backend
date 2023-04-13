@@ -18,7 +18,7 @@ CREATE TYPE "VehicleStatusType" AS ENUM (
   'USINGE'
 );
 
-CREATE TYPE "TasksStatus" AS ENUM (
+CREATE TYPE "TaskStatusType" AS ENUM (
   'OPENED',
   'DONE'
 );
@@ -31,7 +31,7 @@ CREATE TABLE "BackOfficers" (
   "name" varchar NOT NULL,
   "phone" varchar NOT NULL,
   "age" int NOT NULL,
-  "gender" GenderType NOT NULL,
+  "gender" "GenderType" NOT NULL,
   "date_of_birth" timestamp NOT NULL,
   "place_of_birth" varchar NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now()),
@@ -44,8 +44,8 @@ CREATE TABLE "Workers" (
   "name" varchar NOT NULL,
   "phone" varchar NOT NULL,
   "age" int NOT NULL,
-  "worker_type" WorkerType NOT NULL,
-  "gender" GenderType NOT NULL,
+  "worker_type" "WorkerType" NOT NULL,
+  "gender" "GenderType" NOT NULL,
   "date_of_birth" timestamp NOT NULL,
   "place_of_birth" varchar NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now()),
@@ -54,8 +54,9 @@ CREATE TABLE "Workers" (
 
 CREATE TABLE "WorkerStatus" (
   "id" BIGSERIAL PRIMARY KEY,
-  "worker_id" varchar UNIQUE NOT NULL,
-  "status" WorkerStatusType NOT NULL,
+  "worker_id" int UNIQUE NOT NULL,
+  "task_id" int NOT NULL,
+  "status" "WorkerStatusType" NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp NOT NULL DEFAULT (now())
 );
@@ -72,8 +73,8 @@ CREATE TABLE "Vehicles" (
 
 CREATE TABLE "VehicleStatus" (
   "id" BIGSERIAL PRIMARY KEY,
-  "vehicle_id" varchar UNIQUE NOT NULL,
-  "status" VehicleStatusType NOT NULL,
+  "vehicle_id" int UNIQUE NOT NULL,
+  "status" "VehicleStatusType" NOT NULL,
   "current_fuel" varchar NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp NOT NULL DEFAULT (now())
@@ -89,8 +90,7 @@ CREATE TABLE "MCPs" (
 
 CREATE TABLE "MCPStatus" (
   "id" BIGSERIAL PRIMARY KEY,
-  "mcp_id" varchar UNIQUE NOT NULL,
-  "location" varchar NOT NULL,
+  "mcp_id" int UNIQUE NOT NULL,
   "capacity" varchar NOT NULL,
   "current_level_fill" varchar NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now()),
@@ -115,21 +115,21 @@ CREATE TABLE "Tasks" (
   "vehicle_id" int NOT NULL,
   "mcp_id" int NOT NULL,
   "route_id" int NOT NULL,
-  "status" TasksStatus NOT NULL,
+  "status" "TaskStatusType" NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp NOT NULL DEFAULT (now())
 );
 
-ALTER TABLE "Workers" ADD FOREIGN KEY ("id") REFERENCES "WorkerStatus" ("worker_id");
+ALTER TABLE "WorkerStatus" ADD FOREIGN KEY ("worker_id") REFERENCES "Workers" ("id");
 
-ALTER TABLE "Vehicles" ADD FOREIGN KEY ("id") REFERENCES "VehicleStatus" ("vehicle_id");
+ALTER TABLE "WorkerStatus" ADD FOREIGN KEY ("task_id") REFERENCES "Tasks" ("id");
 
-ALTER TABLE "MCPs" ADD FOREIGN KEY ("id") REFERENCES "MCPStatus" ("mcp_id");
+ALTER TABLE "VehicleStatus" ADD FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id");
 
-ALTER TABLE "Workers" ADD FOREIGN KEY ("id") REFERENCES "Tasks" ("worker_id");
+ALTER TABLE "MCPStatus" ADD FOREIGN KEY ("mcp_id") REFERENCES "MCPs" ("id");
 
-ALTER TABLE "Vehicles" ADD FOREIGN KEY ("id") REFERENCES "Tasks" ("vehicle_id");
+ALTER TABLE "Tasks" ADD FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id");
 
-ALTER TABLE "MCPs" ADD FOREIGN KEY ("id") REFERENCES "Tasks" ("mcp_id");
+ALTER TABLE "Tasks" ADD FOREIGN KEY ("mcp_id") REFERENCES "MCPs" ("id");
 
-ALTER TABLE "Routes" ADD FOREIGN KEY ("id") REFERENCES "Tasks" ("route_id");
+ALTER TABLE "Tasks" ADD FOREIGN KEY ("route_id") REFERENCES "Routes" ("id");

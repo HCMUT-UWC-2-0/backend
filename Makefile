@@ -2,7 +2,7 @@
 GO_MODULE := github.com/HCMUT-UWC-2-0/backend
 POSTGRES_USER := root
 POSTGRES_PASSWORD := secret
-POSTGRES_DB := zunidb
+POSTGRES_DB := uwcdb
 POSTGRES_PORT := 5432
 POSTGRES_HOST := localhost
 POSTGRES_SOURCE := postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable
@@ -45,7 +45,7 @@ remove_sql:
 init_sql:
 	docker exec -it postgres psql -U root ${POSTGRES_DB} -a -f ${POSTGRES_DB}/initdb/init.sql
 seed:
-	make copy_sql && make init_sql && make remove_sql
+	go run main.go seed-backofficers
 
 # This command is used for Postgres interaction
 
@@ -57,7 +57,7 @@ test:
 
 # Run server in development
 server:
-	go run main.go
+	go run main.go 
 
 sqlc:
 	sqlc generate
