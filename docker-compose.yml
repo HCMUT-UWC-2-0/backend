@@ -1,0 +1,33 @@
+version: "3"
+services:
+  postgres:
+    image: "postgres:15" 
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./db/initdb:/${POSTGRES_DB}/initdb
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - zuninetwork
+
+  zuni-server:
+    depends_on:
+      - postgres
+    build: .
+    container_name: zuni-server
+    ports:
+      - '8000:8000'
+    networks:
+      - zuninetwork
+    restart: always
+
+volumes:
+  pg_data:
+
+networks:
+  zuninetwork:
