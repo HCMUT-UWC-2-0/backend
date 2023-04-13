@@ -1,6 +1,7 @@
 package seed
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -15,8 +16,6 @@ func (seed *Seed) runBackOfficersSeed() error {
 		return err
 	}
 
-	query := `INSERT INTO "BackOfficers" (email, ssn, hashed_password, name, phone, age, gender, date_of_birth, place_of_birth) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	backOfficers := []db.CreateBackOfficersParams{
 		{
@@ -46,10 +45,7 @@ func (seed *Seed) runBackOfficersSeed() error {
 
 	// Insert the backofficers into the database
     for _, b := range backOfficers {
-        _, err := seed.db.Exec(query, b.Email, b.Ssn, b.HashedPassword, b.Name, b.Phone, b.Age, b.Gender, b.DateOfBirth, b.PlaceOfBirth)
-        if err != nil {
-            return err
-        }
+        seed.store.CreateBackOfficers(context.Background(),b)
     }
 
 	fmt.Println("Back officers seed completed.")

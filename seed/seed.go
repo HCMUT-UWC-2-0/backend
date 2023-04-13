@@ -1,22 +1,19 @@
 package seed
 
 import (
-	"database/sql"
+	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
 )
-
-// type SeedSource struct {
-// 	filePath string
-// 	dbName 	string
 
 // }
 type Seed struct {
-	db      *sql.DB
+	// db      *sql.DB
+	store      db.Store
 	// source  []SeedSource
 }
 
-func NewSeed(db *sql.DB) (*Seed, error) {
+func NewSeed(store *db.Store) (*Seed, error) {
 	seed := &Seed{
-		db:      db,
+		store:      *store,
 		// source: source,
 	}
 	return seed, nil

@@ -31,8 +31,9 @@ func main() {
 
 	runDBMigration(config.MigrationURL, config.DBSource)
 
+	store := db.NewStore(conn)
 	
-	seed, err := seed.NewSeed(conn)
+	seed, err := seed.NewSeed(&store)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +47,6 @@ func main() {
 		log.Fatal(err)
 	}
 	
-	store := db.NewStore(conn)
 
 	server, err := api.NewServer(config, store)
 
