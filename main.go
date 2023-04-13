@@ -9,9 +9,10 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 
-	"github.com/DV-Lab/zuni-backend/api"
-	db "github.com/DV-Lab/zuni-backend/db/sqlc"
-	"github.com/DV-Lab/zuni-backend/util"
+	"github.com/HCMUT-UWC-2-0/backend/api"
+	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
+	"github.com/HCMUT-UWC-2-0/backend/seed"
+	"github.com/HCMUT-UWC-2-0/backend/util"
 	_ "github.com/lib/pq"
 )
 
@@ -28,10 +29,23 @@ func main() {
 		log.Fatal("cannot connect to the db...:", err)
 	}
 
-	defer conn.Close()
-
 	runDBMigration(config.MigrationURL, config.DBSource)
 
+	
+	seed, err := seed.NewSeed(conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = seed.Run()
+
+	defer conn.Close()
+	
+	if err != nil {
+		fmt.Println("seed error: ")
+		log.Fatal(err)
+	}
+	
 	store := db.NewStore(conn)
 
 	server, err := api.NewServer(config, store)
@@ -55,8 +69,10 @@ func runDBMigration(migrationURL string, dbSource string) {
 	}
 
 	if err = migration.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal("failed to run migrate up")
+		log.Fatal("failed to run migrate up", err)
 	}
 
 	fmt.Println("db migrated successfully")
 }
+
+
