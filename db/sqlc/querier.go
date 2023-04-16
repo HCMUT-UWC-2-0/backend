@@ -10,8 +10,12 @@ import (
 
 type Querier interface {
 	CreateBackOfficer(ctx context.Context, arg CreateBackOfficerParams) (BackOfficer, error)
+	CreateMCP(ctx context.Context, arg CreateMCPParams) (MCP, error)
+	CreateVehicle(ctx context.Context, arg CreateVehicleParams) (Vehicle, error)
 	CreateWorker(ctx context.Context, arg CreateWorkerParams) (Worker, error)
 	GetBackOfficer(ctx context.Context, email string) (BackOfficer, error)
+	ListAllMCPs(ctx context.Context) ([]MCP, error)
+	ListAllVehicles(ctx context.Context) ([]Vehicle, error)
 	ListAllWorkers(ctx context.Context, workerType WorkerType) ([]Worker, error)
 }
 

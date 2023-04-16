@@ -64,6 +64,8 @@ func (server *Server) setupRouter() {
 
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 	authRoutes.GET("/api/workers", server.listAllWorkers)
+	authRoutes.GET("/api/vehicles", server.listAllVehicles)
+	authRoutes.GET("/api/mcps", server.listAllMCPs)
 
 	server.router = router
 }

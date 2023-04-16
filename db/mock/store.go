@@ -50,6 +50,36 @@ func (mr *MockStoreMockRecorder) CreateBackOfficer(arg0, arg1 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBackOfficer", reflect.TypeOf((*MockStore)(nil).CreateBackOfficer), arg0, arg1)
 }
 
+// CreateMCP mocks base method.
+func (m *MockStore) CreateMCP(arg0 context.Context, arg1 db.CreateMCPParams) (db.MCP, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateMCP", arg0, arg1)
+	ret0, _ := ret[0].(db.MCP)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateMCP indicates an expected call of CreateMCP.
+func (mr *MockStoreMockRecorder) CreateMCP(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMCP", reflect.TypeOf((*MockStore)(nil).CreateMCP), arg0, arg1)
+}
+
+// CreateVehicle mocks base method.
+func (m *MockStore) CreateVehicle(arg0 context.Context, arg1 db.CreateVehicleParams) (db.Vehicle, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateVehicle", arg0, arg1)
+	ret0, _ := ret[0].(db.Vehicle)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateVehicle indicates an expected call of CreateVehicle.
+func (mr *MockStoreMockRecorder) CreateVehicle(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVehicle", reflect.TypeOf((*MockStore)(nil).CreateVehicle), arg0, arg1)
+}
+
 // CreateWorker mocks base method.
 func (m *MockStore) CreateWorker(arg0 context.Context, arg1 db.CreateWorkerParams) (db.Worker, error) {
 	m.ctrl.T.Helper()
@@ -78,6 +108,36 @@ func (m *MockStore) GetBackOfficer(arg0 context.Context, arg1 string) (db.BackOf
 func (mr *MockStoreMockRecorder) GetBackOfficer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBackOfficer", reflect.TypeOf((*MockStore)(nil).GetBackOfficer), arg0, arg1)
+}
+
+// ListAllMCPs mocks base method.
+func (m *MockStore) ListAllMCPs(arg0 context.Context) ([]db.MCP, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllMCPs", arg0)
+	ret0, _ := ret[0].([]db.MCP)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllMCPs indicates an expected call of ListAllMCPs.
+func (mr *MockStoreMockRecorder) ListAllMCPs(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllMCPs", reflect.TypeOf((*MockStore)(nil).ListAllMCPs), arg0)
+}
+
+// ListAllVehicles mocks base method.
+func (m *MockStore) ListAllVehicles(arg0 context.Context) ([]db.Vehicle, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllVehicles", arg0)
+	ret0, _ := ret[0].([]db.Vehicle)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllVehicles indicates an expected call of ListAllVehicles.
+func (mr *MockStoreMockRecorder) ListAllVehicles(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllVehicles", reflect.TypeOf((*MockStore)(nil).ListAllVehicles), arg0)
 }
 
 // ListAllWorkers mocks base method.

@@ -20,7 +20,7 @@ func (seed *Seed) runWorkersSeed() error {
 		seed.store.CreateWorker(context.Background(), b)
 	}
 
-	fmt.Println("Back officers seed completed.")
+	fmt.Println("Janitors and collectors seeds completed.")
 
 	return nil
 }

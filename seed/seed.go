@@ -30,5 +30,15 @@ func (seed *Seed) Run() error {
 		return err
 	}
 
+	err = seed.runVehicleSeed()
+	if err != nil {
+		return err
+	}
+
+	err = seed.runMCPSeed()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
