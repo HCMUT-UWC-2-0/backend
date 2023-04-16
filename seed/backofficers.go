@@ -17,7 +17,7 @@ func (seed *Seed) runBackOfficersSeed() error {
 	}
 
 
-	backOfficers := []db.CreateBackOfficersParams{
+	backOfficers := []db.CreateBackOfficerParams{
 		{
 			Email:          "john.doe@example.com",
 			Ssn:            "123-45-6789",
@@ -45,7 +45,7 @@ func (seed *Seed) runBackOfficersSeed() error {
 
 	// Insert the backofficers into the database
     for _, b := range backOfficers {
-        seed.store.CreateBackOfficers(context.Background(),b)
+        seed.store.CreateBackOfficer(context.Background(),b)
     }
 
 	fmt.Println("Back officers seed completed.")

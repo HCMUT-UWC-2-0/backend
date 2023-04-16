@@ -9,8 +9,10 @@ import (
 )
 
 type Querier interface {
-	CreateBackOfficers(ctx context.Context, arg CreateBackOfficersParams) (BackOfficer, error)
+	CreateBackOfficer(ctx context.Context, arg CreateBackOfficerParams) (BackOfficer, error)
+	CreateWorker(ctx context.Context, arg CreateWorkerParams) (Worker, error)
 	GetBackOfficer(ctx context.Context, email string) (BackOfficer, error)
+	ListAllWorkers(ctx context.Context, workerType WorkerType) ([]Worker, error)
 }
 
 var _ Querier = (*Queries)(nil)

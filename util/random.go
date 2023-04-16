@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
+
 )
 
 func init() {
@@ -17,7 +19,6 @@ func RandomInt(min, max int32) int32 {
 }
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz"
-const number = "0123456789"
 
 func RandomString(n int) string {
 	var sb strings.Builder
@@ -29,17 +30,6 @@ func RandomString(n int) string {
 	}
 
 	return sb.String()
-}
-func RandomOwner() string {
-	return RandomString(6)
-}
-func RandomMoney() int32 {
-	return RandomInt(0, 1000)
-}
-func RandomCurrency() string {
-	currencies := []string{"USD", "EUR", "GBP"}
-	n := len(currencies)
-	return currencies[rand.Intn(n)]
 }
 
 // RandomEmail generates a random email
@@ -61,25 +51,73 @@ func RandomNullDate() sql.NullTime {
 	}
 }
 
-func RandomGender() string {
-	genders := []string{"male", "female"}
-	n := len(genders)
-	return genders[rand.Intn(n)]
+// generate a random social security number
+func generateSSN() string {
+	return fmt.Sprintf("%03d-%02d-%04d", rand.Intn(999), rand.Intn(99), rand.Intn(9999))
 }
 
-func RandomPhone() string {
-	var sb strings.Builder
-	k := len(number)
+// generate a random name
+func generateName(index int) string {
+	names := []string{"John", "Jane", "Bob", "Alice", "David", "Mary", "Mike", "Lisa", "James", "Emily"}
+	return names[index]
+}
 
-	for i := 0; i < 10; i++ {
-		c := number[rand.Intn(k)]
-		sb.WriteByte(c)
+// generate a random phone number
+func generatePhone() string {
+	return fmt.Sprintf("+84 %d-%04d", rand.Intn(999)+100, rand.Intn(9999))
+}
+
+// generate a random age
+func generateAge() int32 {
+	return rand.Int31n(60) + 20
+}
+
+// generate a random worker type
+func generateWorkerType() db.WorkerType {
+	types := []db.WorkerType{db.WorkerTypeJANITOR, db.WorkerTypeCOLLECTOR}
+	return types[rand.Intn(len(types))]
+}
+
+// generate a random gender
+func generateGender() db.GenderType {
+	genders := []db.GenderType{db.GenderTypeMALE, db.GenderTypeFEMALE}
+	return genders[rand.Intn(len(genders))]
+}
+
+// generate a random date of birth
+func generateDateOfBirth() time.Time {
+	min := time.Date(1960, 1, 1, 0, 0, 0, 0, time.UTC).Unix()
+	max := time.Now().Unix()
+	sec := rand.Int63n(max-min) + min
+	return time.Unix(sec, 0)
+}
+
+// generate a random place of birth
+func generatePlaceOfBirth() string {
+	places := []string{"Ha Noi", "Ho Chi Minh City", "Da Nang", "Hai Phong", "Can Tho", "Bien Hoa", "Vung Tau", "Nha Trang", "Phan Thiet", "Da Lat"}
+	return places[rand.Intn(len(places))]
+}
+
+
+// define a function to generate a random worker
+func RandomWorker(index int) db.CreateWorkerParams {
+	ssn := generateSSN()
+	name := generateName(index)
+	phone := generatePhone()
+	age := generateAge()
+	workerType := generateWorkerType()
+	gender := generateGender()
+	dateOfBirth := generateDateOfBirth()
+	placeOfBirth := generatePlaceOfBirth()
+
+	return db.CreateWorkerParams{
+		Ssn:            ssn,
+		Name:           name,
+		Phone:          phone,
+		Age:            age,
+		WorkerType:     workerType,
+		Gender:         gender,
+		DateOfBirth:    dateOfBirth,
+		PlaceOfBirth:   placeOfBirth,
 	}
-	return sb.String()
-}
-
-func RandomRole() string {
-	roles := []string{"ADMIN", "STUDENT"}
-	n := len(roles)
-	return roles[rand.Intn(n)]
 }

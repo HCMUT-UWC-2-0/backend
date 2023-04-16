@@ -25,5 +25,10 @@ func (seed *Seed) Run() error {
 		return err
 	}
 
+	err = seed.runWorkersSeed()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

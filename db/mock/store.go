@@ -35,19 +35,34 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 	return m.recorder
 }
 
-// CreateBackOfficers mocks base method.
-func (m *MockStore) CreateBackOfficers(arg0 context.Context, arg1 db.CreateBackOfficersParams) (db.BackOfficer, error) {
+// CreateBackOfficer mocks base method.
+func (m *MockStore) CreateBackOfficer(arg0 context.Context, arg1 db.CreateBackOfficerParams) (db.BackOfficer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateBackOfficers", arg0, arg1)
+	ret := m.ctrl.Call(m, "CreateBackOfficer", arg0, arg1)
 	ret0, _ := ret[0].(db.BackOfficer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateBackOfficers indicates an expected call of CreateBackOfficers.
-func (mr *MockStoreMockRecorder) CreateBackOfficers(arg0, arg1 interface{}) *gomock.Call {
+// CreateBackOfficer indicates an expected call of CreateBackOfficer.
+func (mr *MockStoreMockRecorder) CreateBackOfficer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBackOfficers", reflect.TypeOf((*MockStore)(nil).CreateBackOfficers), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBackOfficer", reflect.TypeOf((*MockStore)(nil).CreateBackOfficer), arg0, arg1)
+}
+
+// CreateWorker mocks base method.
+func (m *MockStore) CreateWorker(arg0 context.Context, arg1 db.CreateWorkerParams) (db.Worker, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateWorker", arg0, arg1)
+	ret0, _ := ret[0].(db.Worker)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateWorker indicates an expected call of CreateWorker.
+func (mr *MockStoreMockRecorder) CreateWorker(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateWorker", reflect.TypeOf((*MockStore)(nil).CreateWorker), arg0, arg1)
 }
 
 // GetBackOfficer mocks base method.
@@ -63,4 +78,19 @@ func (m *MockStore) GetBackOfficer(arg0 context.Context, arg1 string) (db.BackOf
 func (mr *MockStoreMockRecorder) GetBackOfficer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBackOfficer", reflect.TypeOf((*MockStore)(nil).GetBackOfficer), arg0, arg1)
+}
+
+// ListAllWorkers mocks base method.
+func (m *MockStore) ListAllWorkers(arg0 context.Context, arg1 db.WorkerType) ([]db.Worker, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllWorkers", arg0, arg1)
+	ret0, _ := ret[0].([]db.Worker)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllWorkers indicates an expected call of ListAllWorkers.
+func (mr *MockStoreMockRecorder) ListAllWorkers(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllWorkers", reflect.TypeOf((*MockStore)(nil).ListAllWorkers), arg0, arg1)
 }

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const createBackOfficers = `-- name: CreateBackOfficers :one
+const createBackOfficer = `-- name: CreateBackOfficer :one
 INSERT INTO
   "BackOfficers" (
     "email",
@@ -28,7 +28,7 @@ VALUES
 RETURNING id, email, ssn, hashed_password, name, phone, age, gender, date_of_birth, place_of_birth, created_at, updated_at
 `
 
-type CreateBackOfficersParams struct {
+type CreateBackOfficerParams struct {
 	Email          string     `json:"email"`
 	Ssn            string     `json:"ssn"`
 	HashedPassword string     `json:"hashed_password"`
@@ -40,8 +40,8 @@ type CreateBackOfficersParams struct {
 	PlaceOfBirth   string     `json:"place_of_birth"`
 }
 
-func (q *Queries) CreateBackOfficers(ctx context.Context, arg CreateBackOfficersParams) (BackOfficer, error) {
-	row := q.db.QueryRowContext(ctx, createBackOfficers,
+func (q *Queries) CreateBackOfficer(ctx context.Context, arg CreateBackOfficerParams) (BackOfficer, error) {
+	row := q.db.QueryRowContext(ctx, createBackOfficer,
 		arg.Email,
 		arg.Ssn,
 		arg.HashedPassword,

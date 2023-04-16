@@ -1,4 +1,4 @@
--- name: CreateBackOfficers :one
+-- name: CreateBackOfficer :one
 INSERT INTO
   "BackOfficers" (
     "email",

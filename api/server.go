@@ -2,13 +2,12 @@ package api
 
 import (
 	"fmt"
+	"net/http"
 
 	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
-	"github.com/HCMUT-UWC-2-0/backend/util"
 	"github.com/HCMUT-UWC-2-0/backend/token"
+	"github.com/HCMUT-UWC-2-0/backend/util"
 	"github.com/gin-gonic/gin"
-
-    "github.com/gin-contrib/cors"
 )
 
 type Server struct {
@@ -29,9 +28,9 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		config:     config,
 		tokenMaker: tokenMaker,
 	}
-	
+
 	server.setupGinDateValidation()
-	
+
 	server.setupRouter()
 	return server, nil
 }
@@ -46,16 +45,25 @@ func (server *Server) Start(address string) error {
 
 func (server *Server) setupRouter() {
 	router := gin.Default()
-	router.Use(cors.Default())
+	router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		if c.Request.Method == http.MethodOptions {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		c.Next()
+	})
 	// router.POST("/api/admin/create", server.createAdmin)
 	router.POST("/auth/login", server.loginAccount)
 
 	// TODO: this api need authentication + authorization
-	// router.POST("/api/degree/create", server.createDegree)
 
-
-
-	// authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+	authRoutes.GET("/api/workers", server.listAllWorkers)
 
 	server.router = router
 }
