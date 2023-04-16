@@ -52,46 +52,46 @@ func (ns NullGenderType) Value() (driver.Value, error) {
 	return string(ns.GenderType), nil
 }
 
-type TasksStatus string
+type TaskStatusType string
 
 const (
-	TasksStatusOPENED TasksStatus = "OPENED"
-	TasksStatusDONE   TasksStatus = "DONE"
+	TaskStatusTypeOPENED TaskStatusType = "OPENED"
+	TaskStatusTypeDONE   TaskStatusType = "DONE"
 )
 
-func (e *TasksStatus) Scan(src interface{}) error {
+func (e *TaskStatusType) Scan(src interface{}) error {
 	switch s := src.(type) {
 	case []byte:
-		*e = TasksStatus(s)
+		*e = TaskStatusType(s)
 	case string:
-		*e = TasksStatus(s)
+		*e = TaskStatusType(s)
 	default:
-		return fmt.Errorf("unsupported scan type for TasksStatus: %T", src)
+		return fmt.Errorf("unsupported scan type for TaskStatusType: %T", src)
 	}
 	return nil
 }
 
-type NullTasksStatus struct {
-	TasksStatus TasksStatus
-	Valid       bool // Valid is true if TasksStatus is not NULL
+type NullTaskStatusType struct {
+	TaskStatusType TaskStatusType
+	Valid          bool // Valid is true if TaskStatusType is not NULL
 }
 
 // Scan implements the Scanner interface.
-func (ns *NullTasksStatus) Scan(value interface{}) error {
+func (ns *NullTaskStatusType) Scan(value interface{}) error {
 	if value == nil {
-		ns.TasksStatus, ns.Valid = "", false
+		ns.TaskStatusType, ns.Valid = "", false
 		return nil
 	}
 	ns.Valid = true
-	return ns.TasksStatus.Scan(value)
+	return ns.TaskStatusType.Scan(value)
 }
 
 // Value implements the driver Valuer interface.
-func (ns NullTasksStatus) Value() (driver.Value, error) {
+func (ns NullTaskStatusType) Value() (driver.Value, error) {
 	if !ns.Valid {
 		return nil, nil
 	}
-	return string(ns.TasksStatus), nil
+	return string(ns.TaskStatusType), nil
 }
 
 type VehicleStatusType string
@@ -221,18 +221,18 @@ func (ns NullWorkerType) Value() (driver.Value, error) {
 }
 
 type BackOfficer struct {
-	ID             int64       `json:"id"`
-	Email          string      `json:"email"`
-	Ssn            string      `json:"ssn"`
-	HashedPassword string      `json:"hashed_password"`
-	Name           string      `json:"name"`
-	Phone          string      `json:"phone"`
-	Age            int32       `json:"age"`
-	Gender         interface{} `json:"gender"`
-	DateOfBirth    time.Time   `json:"date_of_birth"`
-	PlaceOfBirth   string      `json:"place_of_birth"`
-	CreatedAt      time.Time   `json:"created_at"`
-	UpdatedAt      time.Time   `json:"updated_at"`
+	ID             int64      `json:"id"`
+	Email          string     `json:"email"`
+	Ssn            string     `json:"ssn"`
+	HashedPassword string     `json:"hashed_password"`
+	Name           string     `json:"name"`
+	Phone          string     `json:"phone"`
+	Age            int32      `json:"age"`
+	Gender         GenderType `json:"gender"`
+	DateOfBirth    time.Time  `json:"date_of_birth"`
+	PlaceOfBirth   string     `json:"place_of_birth"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
 }
 
 type MCP struct {
@@ -245,8 +245,7 @@ type MCP struct {
 
 type MCPStatus struct {
 	ID               int64     `json:"id"`
-	McpID            string    `json:"mcp_id"`
-	Location         string    `json:"location"`
+	McpID            int32     `json:"mcp_id"`
 	Capacity         string    `json:"capacity"`
 	CurrentLevelFill string    `json:"current_level_fill"`
 	CreatedAt        time.Time `json:"created_at"`
@@ -264,16 +263,16 @@ type Route struct {
 }
 
 type Task struct {
-	ID        int64       `json:"id"`
-	StartTime time.Time   `json:"start_time"`
-	EndTime   time.Time   `json:"end_time"`
-	WorkerID  int32       `json:"worker_id"`
-	VehicleID int32       `json:"vehicle_id"`
-	McpID     int32       `json:"mcp_id"`
-	RouteID   int32       `json:"route_id"`
-	Status    interface{} `json:"status"`
-	CreatedAt time.Time   `json:"created_at"`
-	UpdatedAt time.Time   `json:"updated_at"`
+	ID        int64          `json:"id"`
+	StartTime time.Time      `json:"start_time"`
+	EndTime   time.Time      `json:"end_time"`
+	WorkerID  int32          `json:"worker_id"`
+	VehicleID int32          `json:"vehicle_id"`
+	McpID     int32          `json:"mcp_id"`
+	RouteID   int32          `json:"route_id"`
+	Status    TaskStatusType `json:"status"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type Vehicle struct {
@@ -287,32 +286,33 @@ type Vehicle struct {
 }
 
 type VehicleStatus struct {
-	ID          int64       `json:"id"`
-	VehicleID   string      `json:"vehicle_id"`
-	Status      interface{} `json:"status"`
-	CurrentFuel string      `json:"current_fuel"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
+	ID          int64             `json:"id"`
+	VehicleID   int32             `json:"vehicle_id"`
+	Status      VehicleStatusType `json:"status"`
+	CurrentFuel string            `json:"current_fuel"`
+	CreatedAt   time.Time         `json:"created_at"`
+	UpdatedAt   time.Time         `json:"updated_at"`
 }
 
 type Worker struct {
-	ID           int64       `json:"id"`
-	Ssn          string      `json:"ssn"`
-	Name         string      `json:"name"`
-	Phone        string      `json:"phone"`
-	Age          int32       `json:"age"`
-	WorkerType   interface{} `json:"worker_type"`
-	Gender       interface{} `json:"gender"`
-	DateOfBirth  time.Time   `json:"date_of_birth"`
-	PlaceOfBirth string      `json:"place_of_birth"`
-	CreatedAt    time.Time   `json:"created_at"`
-	UpdatedAt    time.Time   `json:"updated_at"`
+	ID           int64      `json:"id"`
+	Ssn          string     `json:"ssn"`
+	Name         string     `json:"name"`
+	Phone        string     `json:"phone"`
+	Age          int32      `json:"age"`
+	WorkerType   WorkerType `json:"worker_type"`
+	Gender       GenderType `json:"gender"`
+	DateOfBirth  time.Time  `json:"date_of_birth"`
+	PlaceOfBirth string     `json:"place_of_birth"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
 }
 
 type WorkerStatus struct {
-	ID        int64       `json:"id"`
-	WorkerID  string      `json:"worker_id"`
-	Status    interface{} `json:"status"`
-	CreatedAt time.Time   `json:"created_at"`
-	UpdatedAt time.Time   `json:"updated_at"`
+	ID        int64            `json:"id"`
+	WorkerID  int32            `json:"worker_id"`
+	TaskID    int32            `json:"task_id"`
+	Status    WorkerStatusType `json:"status"`
+	CreatedAt time.Time        `json:"created_at"`
+	UpdatedAt time.Time        `json:"updated_at"`
 }

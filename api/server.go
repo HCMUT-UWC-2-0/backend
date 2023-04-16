@@ -7,6 +7,8 @@ import (
 	"github.com/HCMUT-UWC-2-0/backend/util"
 	"github.com/HCMUT-UWC-2-0/backend/token"
 	"github.com/gin-gonic/gin"
+
+    "github.com/gin-contrib/cors"
 )
 
 type Server struct {
@@ -44,9 +46,9 @@ func (server *Server) Start(address string) error {
 
 func (server *Server) setupRouter() {
 	router := gin.Default()
-	router.Use(CORSMiddleware())
+	router.Use(cors.Default())
 	// router.POST("/api/admin/create", server.createAdmin)
-	// router.POST("/auth/login", server.loginAccount)
+	router.POST("/auth/login", server.loginAccount)
 
 	// TODO: this api need authentication + authorization
 	// router.POST("/api/degree/create", server.createDegree)

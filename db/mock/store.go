@@ -50,17 +50,17 @@ func (mr *MockStoreMockRecorder) CreateBackOfficers(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBackOfficers", reflect.TypeOf((*MockStore)(nil).CreateBackOfficers), arg0, arg1)
 }
 
-// GetAdmin mocks base method.
-func (m *MockStore) GetAdmin(arg0 context.Context, arg1 string) (db.BackOfficer, error) {
+// GetBackOfficer mocks base method.
+func (m *MockStore) GetBackOfficer(arg0 context.Context, arg1 string) (db.BackOfficer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAdmin", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetBackOfficer", arg0, arg1)
 	ret0, _ := ret[0].(db.BackOfficer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetAdmin indicates an expected call of GetAdmin.
-func (mr *MockStoreMockRecorder) GetAdmin(arg0, arg1 interface{}) *gomock.Call {
+// GetBackOfficer indicates an expected call of GetBackOfficer.
+func (mr *MockStoreMockRecorder) GetBackOfficer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAdmin", reflect.TypeOf((*MockStore)(nil).GetAdmin), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBackOfficer", reflect.TypeOf((*MockStore)(nil).GetBackOfficer), arg0, arg1)
 }

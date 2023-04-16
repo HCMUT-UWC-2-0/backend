@@ -29,15 +29,15 @@ RETURNING id, email, ssn, hashed_password, name, phone, age, gender, date_of_bir
 `
 
 type CreateBackOfficersParams struct {
-	Email          string      `json:"email"`
-	Ssn            string      `json:"ssn"`
-	HashedPassword string      `json:"hashed_password"`
-	Name           string      `json:"name"`
-	Phone          string      `json:"phone"`
-	Age            int32       `json:"age"`
-	Gender         interface{} `json:"gender"`
-	DateOfBirth    time.Time   `json:"date_of_birth"`
-	PlaceOfBirth   string      `json:"place_of_birth"`
+	Email          string     `json:"email"`
+	Ssn            string     `json:"ssn"`
+	HashedPassword string     `json:"hashed_password"`
+	Name           string     `json:"name"`
+	Phone          string     `json:"phone"`
+	Age            int32      `json:"age"`
+	Gender         GenderType `json:"gender"`
+	DateOfBirth    time.Time  `json:"date_of_birth"`
+	PlaceOfBirth   string     `json:"place_of_birth"`
 }
 
 func (q *Queries) CreateBackOfficers(ctx context.Context, arg CreateBackOfficersParams) (BackOfficer, error) {
@@ -70,13 +70,13 @@ func (q *Queries) CreateBackOfficers(ctx context.Context, arg CreateBackOfficers
 	return i, err
 }
 
-const getAdmin = `-- name: GetAdmin :one
+const getBackOfficer = `-- name: GetBackOfficer :one
 SELECT id, email, ssn, hashed_password, name, phone, age, gender, date_of_birth, place_of_birth, created_at, updated_at FROM "BackOfficers" 
 WHERE email = $1 LIMIT 1
 `
 
-func (q *Queries) GetAdmin(ctx context.Context, email string) (BackOfficer, error) {
-	row := q.db.QueryRowContext(ctx, getAdmin, email)
+func (q *Queries) GetBackOfficer(ctx context.Context, email string) (BackOfficer, error) {
+	row := q.db.QueryRowContext(ctx, getBackOfficer, email)
 	var i BackOfficer
 	err := row.Scan(
 		&i.ID,

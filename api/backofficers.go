@@ -1,53 +1,65 @@
 package api
 
-// import (
-// 	"net/http"
+import (
+	"database/sql"
+	"net/http"
 
-// 	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
-// 	"github.com/gin-gonic/gin"
-// )
+	"github.com/HCMUT-UWC-2-0/backend/token"
+	"github.com/HCMUT-UWC-2-0/backend/util"
+	"github.com/gin-gonic/gin"
+)
 
-// type createAdminRequest struct {
-// 	AdminID             string `json:"admin_id" binding:"required"`
-// 	Password            string `json:"password" binding:"required,min=6"`
-// 	PublicKey           string `json:"public_key"  binding:"required"`
-// 	EncryptedPrivateKey string `json:"encrypted_private_key"  binding:"required"`
-// 	Name                string `json:"name" binding:"required"`
-// }
+type loginAccountRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6"`
+}
 
-// type adminResponse struct {
-// 	AdminID string `json:"admin_id"`
-// 	Name    string `json:"name"`
-// }
+type loginAccountResponse struct {
+	AccessToken string `json:"accessToken"`
+}
 
-// func newAdminResponse(admin db.Admin) adminResponse {
-// 	return adminResponse{
-// 		AdminID: admin.AdminID,
-// 		Name:    admin.Name,
-// 	}
-// }
+func (server *Server) loginAccount(ctx *gin.Context) {
+	var req loginAccountRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
 
-// func (server *Server) createAdmin(ctx *gin.Context) {
-// 	var req createAdminRequest
-// 	if err := ctx.ShouldBindJSON(&req); err != nil {
-// 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-// 		return
-// 	}
+	bo, err := server.store.GetBackOfficer(ctx, req.Email)
 
-// 	arg := db.InsertAdminTxParams{
-// 		AdminID:             req.AdminID,
-// 		Password:            req.Password,
-// 		PublicKey:           req.PublicKey,
-// 		EncryptedPrivateKey: req.EncryptedPrivateKey,
-// 		Name:                req.Name,
-// 	}
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
-// 	result, err := server.store.InsertAdminTx(ctx, arg)
-// 	if err != nil {
-// 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-// 		return
-// 	}
+	err = util.CheckPassword(req.Password, bo.HashedPassword)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
 
-// 	rsp := (result)
-// 	ctx.JSON(http.StatusOK, rsp)
-// }
+	// using email + ssn for generating accessToken
+
+	boAccessTokenInfo := token.BackOfficerInfo{
+		Email: bo.Email,
+		Ssn:   bo.Ssn,
+	}
+
+	accessToken, err := server.tokenMaker.CreateToken(
+		boAccessTokenInfo,
+		server.config.AccessTokenDuration,
+	)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	var rsp = loginAccountResponse{
+		AccessToken: accessToken,
+	}
+	ctx.JSON(http.StatusOK, rsp)
+}

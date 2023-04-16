@@ -10,7 +10,7 @@ import (
 
 type Querier interface {
 	CreateBackOfficers(ctx context.Context, arg CreateBackOfficersParams) (BackOfficer, error)
-	GetAdmin(ctx context.Context, email string) (BackOfficer, error)
+	GetBackOfficer(ctx context.Context, email string) (BackOfficer, error)
 }
 
 var _ Querier = (*Queries)(nil)
