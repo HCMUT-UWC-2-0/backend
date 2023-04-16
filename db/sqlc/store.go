@@ -4,13 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
+	"github.com/lib/pq"
 )
 
 type Store interface {
 	// TODO: add functions to this interface
 	Querier
 	// InsertStudentTx(ctx context.Context, arg InsertStudentTxParams) (InsertStudentTxResult, error)
-	// InsertAdminTx(ctx context.Context, arg InsertAdminTxParams) (InsertAdminTxResult, error) 
+	InsertTaskTx(ctx context.Context, arg CreateTaskParams) (Task, error)
 }
 
 type SQLStore struct {
@@ -51,178 +53,46 @@ func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 	return tx.Commit()
 }
 
-// type InsertAdminTxParams struct {
-// 	AdminID             string `json:"admin_id" `
-// 	Password            string `json:"password"`
-// 	PublicKey           string `json:"public_key"  `
-// 	EncryptedPrivateKey string `json:"encrypted_private_key"  `
-// 	Name                string `json:"name" `
-// }
 
-// type InsertAdminTxResult struct {
-// 	AdminID string `json:"admin_id"`
-// 	Name    string `json:"name"`
-// }
+func (store *SQLStore) InsertTaskTx(ctx context.Context, arg CreateTaskParams) (Task, error) {
 
-// func (store *SQLStore) InsertAdminTx(ctx context.Context, arg InsertAdminTxParams) (InsertAdminTxResult, error) {
+	var result Task
 
-// 	var result InsertAdminTxResult
+	err := store.execTx(ctx, func(q *Queries) error {
 
-// 	err := store.execTx(ctx, func(q *Queries) error {
-// 		hashedPassword, err := util.HashPassword(arg.Password)
-// 		if err != nil {
-// 			return err
-// 		}
+		task, err := q.CreateTask(ctx, arg)
+		if err != nil {
+			if pqErr, ok := err.(*pq.Error); ok {
+				switch pqErr.Code.Name() {
+				case "unique_violation":
+					return err
+				}
+			}
+			return err
+		}
 
-// 		// create account first
-// 		account_arg := CreateAccountParams{
-// 			AccountID:           arg.AdminID,
-// 			Role:                RoleTypeADMIN,
-// 			Password:            hashedPassword,
-// 			PublicKey:           arg.PublicKey,
-// 			EncryptedPrivateKey: arg.EncryptedPrivateKey,
-// 		}
+		updateJanitorStatusParam := UpdateWorkerStatusParams{
+			WorkerID: int32(task.JanitorID),
+			Status:   WorkerStatusTypeWORKING,
+		}
+		_, err = q.UpdateWorkerStatus(ctx, updateJanitorStatusParam)
+		if err != nil {
+			return err
+		}
 
-// 		account, err := q.CreateAccount(ctx, account_arg)
-// 		if err != nil {
-// 			if pqErr, ok := err.(*pq.Error); ok {
-// 				switch pqErr.Code.Name() {
-// 				case "unique_violation":
-// 					return err
-// 				}
-// 			}
-// 			return err
-// 		}
 
-// 		fmt.Println(account)
+		updateCollctorStatusParam := UpdateWorkerStatusParams{
+			WorkerID: int32(task.CollectorID),
+			Status:   WorkerStatusTypeWORKING,
+		}
+		_, err = q.UpdateWorkerStatus(ctx, updateCollctorStatusParam)
+		if err != nil {
+			return err
+		}
 
-// 		admin_arg := CreateAdminParams{
-// 			AdminID:      account.AccountID,
-// 			Name:           arg.Name,
-// 		}
+		result = task
+		return nil
+	})
+	return result, err
 
-// 		admin, err := q.CreateAdmin(ctx, admin_arg)
-// 		if err != nil {
-// 			if pqErr, ok := err.(*pq.Error); ok {
-// 				switch pqErr.Code.Name() {
-// 				case "unique_violation":
-// 					return err
-// 				}
-// 			}
-// 			return err
-// 		}
-// 		result = InsertAdminTxResult{
-// 			AdminID : admin.AdminID,
-// 			Name    : admin.Name,
-// 		}
-// 		return nil
-// 	})
-// 	return result, err
-
-// }
-
-// type InsertStudentTxParams struct {
-// 	StudentID           string     `json:"student_id" binding:"required"`
-// 	Password            string     `json:"password" binding:"required,min=6"`
-// 	PublicKey           string     `json:"public_key"  binding:"required"`
-// 	EncryptedPrivateKey string     `json:"encrypted_private_key"  binding:"required"`
-// 	CitizenID           string     `json:"citizen_id" binding:"required,min=6"`
-// 	Name                string     `json:"name" binding:"required"`
-// 	Gender              GenderType `json:"gender" binding:"required"`
-// 	DateOfBirth         string     `json:"date_of_birth" binding:"required,date"`
-// 	PlaceOfBirth        string     `json:"place_of_birth" binding:"required"`
-// 	Class               string     `json:"class" binding:"required"`
-// 	Department          string     `json:"department" binding:"required"`
-// 	TimeOfTraining      int32      `json:"time_of_training" binding:"required"`
-// 	FormOfTraining      string     `json:"form_of_training" binding:"required"`
-// }
-
-// type InsertStudentTxResult struct {
-// 	StudentID      string     `json:"student_id"`
-// 	CitizenID      string     `json:"citizen_id"`
-// 	Name           string     `json:"name"`
-// 	Gender         GenderType `json:"gender"`
-// 	DateOfBirth    time.Time  `json:"date_of_birth"`
-// 	PlaceOfBirth   string     `json:"place_of_birth"`
-// 	Class          string     `json:"class"`
-// 	Department     string     `json:"department"`
-// 	TimeOfTraining int32      `json:"time_of_training"`
-// 	FormOfTraining string     `json:"form_of_training"`
-// }
-
-// func (store *SQLStore) InsertStudentTx(ctx context.Context, arg InsertStudentTxParams) (InsertStudentTxResult, error) {
-
-// 	var result InsertStudentTxResult
-
-// 	err := store.execTx(ctx, func(q *Queries) error {
-// 		hashedPassword, err := util.HashPassword(arg.Password)
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		dob, err := util.MapStringToTime(arg.DateOfBirth)
-// 		if err != nil {
-// 			return err
-// 		}
-
-// 		// create account first
-// 		account_arg := CreateAccountParams{
-// 			AccountID:           arg.StudentID,
-// 			Role:                RoleTypeSTUDENT,
-// 			Password:            hashedPassword,
-// 			PublicKey:           arg.PublicKey,
-// 			EncryptedPrivateKey: arg.EncryptedPrivateKey,
-// 		}
-
-// 		account, err := q.CreateAccount(ctx, account_arg)
-// 		if err != nil {
-// 			if pqErr, ok := err.(*pq.Error); ok {
-// 				switch pqErr.Code.Name() {
-// 				case "unique_violation":
-// 					return err
-// 				}
-// 			}
-// 			return err
-// 		}
-
-// 		fmt.Println(account)
-
-// 		student_arg := CreateStudentParams{
-// 			StudentID:      account.AccountID,
-// 			CitizenID:      arg.CitizenID,
-// 			Name:           arg.Name,
-// 			Gender:         arg.Gender,
-// 			DateOfBirth:    dob,
-// 			PlaceOfBirth:   arg.PlaceOfBirth,
-// 			Class:          arg.Class,
-// 			Department:     arg.Department,
-// 			TimeOfTraining: arg.TimeOfTraining,
-// 			FormOfTraining: arg.FormOfTraining,
-// 		}
-
-// 		student, err := q.CreateStudent(ctx, student_arg)
-// 		if err != nil {
-// 			if pqErr, ok := err.(*pq.Error); ok {
-// 				switch pqErr.Code.Name() {
-// 				case "unique_violation":
-// 					return err
-// 				}
-// 			}
-// 			return err
-// 		}
-// 		result = InsertStudentTxResult{
-// 			StudentID:      student.StudentID,
-// 			CitizenID:      student.CitizenID,
-// 			Name:           student.Name,
-// 			Gender:         student.Gender,
-// 			PlaceOfBirth:   student.PlaceOfBirth,
-// 			Class:          student.Class,
-// 			Department:     student.Department,
-// 			TimeOfTraining: student.TimeOfTraining,
-// 			FormOfTraining: student.FormOfTraining,
-// 		}
-// 		return nil
-// 	})
-// 	return result, err
-
-// }
+}

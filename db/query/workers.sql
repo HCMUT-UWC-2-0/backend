@@ -18,3 +18,20 @@ RETURNING *;
 SELECT * FROM "Workers" 
 WHERE "worker_type" = $1
 ORDER BY id;
+
+
+-- name: CreateWorkerStatus :one
+INSERT INTO
+  "WorkerStatus" (
+    "worker_id"
+  )
+VALUES
+  ($1)
+RETURNING *;
+
+
+-- name: UpdateWorkerStatus :one
+UPDATE "WorkerStatus"
+SET "status" = $2
+WHERE "worker_id" = $1
+RETURNING *;

@@ -66,6 +66,7 @@ func (server *Server) setupRouter() {
 	authRoutes.GET("/api/workers", server.listAllWorkers)
 	authRoutes.GET("/api/vehicles", server.listAllVehicles)
 	authRoutes.GET("/api/mcps", server.listAllMCPs)
+	authRoutes.POST("/api/tasks", server.createTask)
 
 	server.router = router
 }

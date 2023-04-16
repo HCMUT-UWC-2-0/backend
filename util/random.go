@@ -3,11 +3,10 @@ package util
 import (
 	"database/sql"
 	"fmt"
+	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
 	"math/rand"
 	"strings"
 	"time"
-	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
-
 )
 
 func init() {
@@ -52,13 +51,34 @@ func RandomNullDate() sql.NullTime {
 }
 
 // generate a random social security number
-func generateSSN() string {
-	return fmt.Sprintf("%03d-%02d-%04d", rand.Intn(999), rand.Intn(99), rand.Intn(9999))
+func generateSSN(index int) string {
+	ssn := [20]string{
+		"002-05-8638",
+		"536-22-4133",
+		"714-53-9492",
+		"908-88-4004",
+		"461-69-3869",
+		"927-38-6591",
+		"084-91-9064",
+		"347-77-1925",
+		"156-31-1932",
+		"289-46-4376",
+		"603-85-4461",
+		"899-38-1609",
+		"177-83-2433",
+		"744-28-3766",
+		"013-58-6823",
+		"632-75-2927",
+		"298-49-0778",
+		"802-35-0357",
+		"175-60-8556",
+		"968-33-9322"}
+	return ssn[index]
 }
 
 // generate a random name
 func generateName(index int) string {
-	names := []string{"John", "Jane", "Bob", "Alice", "David", "Mary", "Mike", "Lisa", "James", "Emily"}
+	names := []string{"Anh", "Bảo", "Cường", "Đạt", "Đức", "Giang", "Hà", "Hải", "Hoàng", "Hùng", "Khánh", "Linh", "Minh", "Nam", "Ngọc", "Nhi", "Phúc", "Quân", "Thảo", "Trang"}
 	return names[index]
 }
 
@@ -72,11 +92,7 @@ func generateAge() int32 {
 	return rand.Int31n(60) + 20
 }
 
-// generate a random worker type
-func generateWorkerType() db.WorkerType {
-	types := []db.WorkerType{db.WorkerTypeJANITOR, db.WorkerTypeCOLLECTOR}
-	return types[rand.Intn(len(types))]
-}
+
 
 // generate a random gender
 func generateGender() db.GenderType {
@@ -98,26 +114,25 @@ func generatePlaceOfBirth() string {
 	return places[rand.Intn(len(places))]
 }
 
-
 // define a function to generate a random worker
-func RandomWorker(index int) db.CreateWorkerParams {
-	ssn := generateSSN()
+func RandomWorker(index int, wt db.WorkerType) db.CreateWorkerParams {
+	ssn := generateSSN(index)
 	name := generateName(index)
 	phone := generatePhone()
 	age := generateAge()
-	workerType := generateWorkerType()
+	workerType := wt
 	gender := generateGender()
 	dateOfBirth := generateDateOfBirth()
 	placeOfBirth := generatePlaceOfBirth()
 
 	return db.CreateWorkerParams{
-		Ssn:            ssn,
-		Name:           name,
-		Phone:          phone,
-		Age:            age,
-		WorkerType:     workerType,
-		Gender:         gender,
-		DateOfBirth:    dateOfBirth,
-		PlaceOfBirth:   placeOfBirth,
+		Ssn:          ssn,
+		Name:         name,
+		Phone:        phone,
+		Age:          age,
+		WorkerType:   workerType,
+		Gender:       gender,
+		DateOfBirth:  dateOfBirth,
+		PlaceOfBirth: placeOfBirth,
 	}
 }

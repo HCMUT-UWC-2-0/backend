@@ -55,8 +55,7 @@ CREATE TABLE "Workers" (
 CREATE TABLE "WorkerStatus" (
   "id" BIGSERIAL PRIMARY KEY,
   "worker_id" int UNIQUE NOT NULL,
-  "task_id" int NOT NULL,
-  "status" "WorkerStatusType" NOT NULL,
+  "status" "WorkerStatusType" NOT NULL DEFAULT 'AVAILABLE',
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp NOT NULL DEFAULT (now())
 );
@@ -111,18 +110,17 @@ CREATE TABLE "Tasks" (
   "id" BIGSERIAL PRIMARY KEY,
   "start_time" timestamp NOT NULL,
   "end_time" timestamp NOT NULL DEFAULT '0001-01-01 00:00:00Z',
-  "worker_id" int NOT NULL,
+  "janitor_id" int NOT NULL,
+  "collector_id" int NOT NULL,
   "vehicle_id" int NOT NULL,
   "mcp_id" int NOT NULL,
   "route_id" int NOT NULL,
-  "status" "TaskStatusType" NOT NULL,
+  "status" "TaskStatusType" NOT NULL DEFAULT 'OPENED',
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp NOT NULL DEFAULT (now())
 );
 
 ALTER TABLE "WorkerStatus" ADD FOREIGN KEY ("worker_id") REFERENCES "Workers" ("id");
-
-ALTER TABLE "WorkerStatus" ADD FOREIGN KEY ("task_id") REFERENCES "Tasks" ("id");
 
 ALTER TABLE "VehicleStatus" ADD FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id");
 

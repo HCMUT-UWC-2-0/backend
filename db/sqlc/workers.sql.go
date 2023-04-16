@@ -66,6 +66,29 @@ func (q *Queries) CreateWorker(ctx context.Context, arg CreateWorkerParams) (Wor
 	return i, err
 }
 
+const createWorkerStatus = `-- name: CreateWorkerStatus :one
+INSERT INTO
+  "WorkerStatus" (
+    "worker_id"
+  )
+VALUES
+  ($1)
+RETURNING id, worker_id, status, created_at, updated_at
+`
+
+func (q *Queries) CreateWorkerStatus(ctx context.Context, workerID int32) (WorkerStatus, error) {
+	row := q.db.QueryRowContext(ctx, createWorkerStatus, workerID)
+	var i WorkerStatus
+	err := row.Scan(
+		&i.ID,
+		&i.WorkerID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listAllWorkers = `-- name: ListAllWorkers :many
 SELECT id, ssn, name, phone, age, worker_type, gender, date_of_birth, place_of_birth, created_at, updated_at FROM "Workers" 
 WHERE "worker_type" = $1
@@ -105,4 +128,29 @@ func (q *Queries) ListAllWorkers(ctx context.Context, workerType WorkerType) ([]
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateWorkerStatus = `-- name: UpdateWorkerStatus :one
+UPDATE "WorkerStatus"
+SET "status" = $2
+WHERE "worker_id" = $1
+RETURNING id, worker_id, status, created_at, updated_at
+`
+
+type UpdateWorkerStatusParams struct {
+	WorkerID int32            `json:"worker_id"`
+	Status   WorkerStatusType `json:"status"`
+}
+
+func (q *Queries) UpdateWorkerStatus(ctx context.Context, arg UpdateWorkerStatusParams) (WorkerStatus, error) {
+	row := q.db.QueryRowContext(ctx, updateWorkerStatus, arg.WorkerID, arg.Status)
+	var i WorkerStatus
+	err := row.Scan(
+		&i.ID,
+		&i.WorkerID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

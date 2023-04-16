@@ -40,5 +40,10 @@ func (seed *Seed) Run() error {
 		return err
 	}
 
+	err = seed.runRouteSeed()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

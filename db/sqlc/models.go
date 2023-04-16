@@ -263,16 +263,17 @@ type Route struct {
 }
 
 type Task struct {
-	ID        int64          `json:"id"`
-	StartTime time.Time      `json:"start_time"`
-	EndTime   time.Time      `json:"end_time"`
-	WorkerID  int32          `json:"worker_id"`
-	VehicleID int32          `json:"vehicle_id"`
-	McpID     int32          `json:"mcp_id"`
-	RouteID   int32          `json:"route_id"`
-	Status    TaskStatusType `json:"status"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
+	ID          int64          `json:"id"`
+	StartTime   time.Time      `json:"start_time"`
+	EndTime     time.Time      `json:"end_time"`
+	JanitorID   int32          `json:"janitor_id"`
+	CollectorID int32          `json:"collector_id"`
+	VehicleID   int32          `json:"vehicle_id"`
+	McpID       int32          `json:"mcp_id"`
+	RouteID     int32          `json:"route_id"`
+	Status      TaskStatusType `json:"status"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
 }
 
 type Vehicle struct {
@@ -311,7 +312,6 @@ type Worker struct {
 type WorkerStatus struct {
 	ID        int64            `json:"id"`
 	WorkerID  int32            `json:"worker_id"`
-	TaskID    int32            `json:"task_id"`
 	Status    WorkerStatusType `json:"status"`
 	CreatedAt time.Time        `json:"created_at"`
 	UpdatedAt time.Time        `json:"updated_at"`

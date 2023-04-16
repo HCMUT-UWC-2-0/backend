@@ -11,12 +11,16 @@ import (
 type Querier interface {
 	CreateBackOfficer(ctx context.Context, arg CreateBackOfficerParams) (BackOfficer, error)
 	CreateMCP(ctx context.Context, arg CreateMCPParams) (MCP, error)
+	CreateRoute(ctx context.Context, arg CreateRouteParams) (Route, error)
+	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
 	CreateVehicle(ctx context.Context, arg CreateVehicleParams) (Vehicle, error)
 	CreateWorker(ctx context.Context, arg CreateWorkerParams) (Worker, error)
+	CreateWorkerStatus(ctx context.Context, workerID int32) (WorkerStatus, error)
 	GetBackOfficer(ctx context.Context, email string) (BackOfficer, error)
 	ListAllMCPs(ctx context.Context) ([]MCP, error)
 	ListAllVehicles(ctx context.Context) ([]Vehicle, error)
 	ListAllWorkers(ctx context.Context, workerType WorkerType) ([]Worker, error)
+	UpdateWorkerStatus(ctx context.Context, arg UpdateWorkerStatusParams) (WorkerStatus, error)
 }
 
 var _ Querier = (*Queries)(nil)
