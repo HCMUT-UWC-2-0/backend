@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/HCMUT-UWC-2-0/backend/token"
 	"github.com/HCMUT-UWC-2-0/backend/util"
@@ -15,7 +16,12 @@ type loginAccountRequest struct {
 }
 
 type loginAccountResponse struct {
-	AccessToken string `json:"accessToken"`
+	AccessToken string    `json:"accessToken"`
+	Name        string    `json:"name"`
+	DateOfBirth time.Time `json:"dateOfBirth"`
+	Email       string    `json:"email"`
+	Phone       string    `json:"phone"`
+	ExpiredAt   time.Time `json:"expiredAt"`
 }
 
 func (server *Server) loginAccount(ctx *gin.Context) {
@@ -60,6 +66,11 @@ func (server *Server) loginAccount(ctx *gin.Context) {
 
 	var rsp = loginAccountResponse{
 		AccessToken: accessToken,
+		Name:        bo.Name,
+		DateOfBirth: bo.DateOfBirth,
+		Phone:       bo.Phone,
+		Email:       bo.Email,
+		ExpiredAt:   time.Now().Add(server.config.AccessTokenDuration),
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }
