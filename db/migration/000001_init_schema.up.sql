@@ -15,7 +15,7 @@ CREATE TYPE "WorkerStatusType" AS ENUM (
 
 CREATE TYPE "VehicleStatusType" AS ENUM (
   'AVAILABLE',
-  'USINGE'
+  'WORKING'
 );
 
 CREATE TYPE "TaskStatusType" AS ENUM (
@@ -73,8 +73,8 @@ CREATE TABLE "Vehicles" (
 CREATE TABLE "VehicleStatus" (
   "id" BIGSERIAL PRIMARY KEY,
   "vehicle_id" int UNIQUE NOT NULL,
-  "status" "VehicleStatusType" NOT NULL,
-  "current_fuel" varchar NOT NULL,
+  "status" "VehicleStatusType" NOT NULL DEFAULT 'AVAILABLE',
+  "current_fuel" varchar,
   "created_at" timestamp NOT NULL DEFAULT (now()),
   "updated_at" timestamp NOT NULL DEFAULT (now())
 );

@@ -110,6 +110,21 @@ func (mr *MockStoreMockRecorder) CreateVehicle(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVehicle", reflect.TypeOf((*MockStore)(nil).CreateVehicle), arg0, arg1)
 }
 
+// CreateVehicleStatus mocks base method.
+func (m *MockStore) CreateVehicleStatus(arg0 context.Context, arg1 int32) (db.VehicleStatus, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateVehicleStatus", arg0, arg1)
+	ret0, _ := ret[0].(db.VehicleStatus)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateVehicleStatus indicates an expected call of CreateVehicleStatus.
+func (mr *MockStoreMockRecorder) CreateVehicleStatus(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVehicleStatus", reflect.TypeOf((*MockStore)(nil).CreateVehicleStatus), arg0, arg1)
+}
+
 // CreateWorker mocks base method.
 func (m *MockStore) CreateWorker(arg0 context.Context, arg1 db.CreateWorkerParams) (db.Worker, error) {
 	m.ctrl.T.Helper()
@@ -155,6 +170,51 @@ func (mr *MockStoreMockRecorder) GetBackOfficer(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBackOfficer", reflect.TypeOf((*MockStore)(nil).GetBackOfficer), arg0, arg1)
 }
 
+// GetRoute mocks base method.
+func (m *MockStore) GetRoute(arg0 context.Context, arg1 int64) (db.Route, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRoute", arg0, arg1)
+	ret0, _ := ret[0].(db.Route)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRoute indicates an expected call of GetRoute.
+func (mr *MockStoreMockRecorder) GetRoute(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoute", reflect.TypeOf((*MockStore)(nil).GetRoute), arg0, arg1)
+}
+
+// GetVehicle mocks base method.
+func (m *MockStore) GetVehicle(arg0 context.Context, arg1 int64) (db.Vehicle, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetVehicle", arg0, arg1)
+	ret0, _ := ret[0].(db.Vehicle)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetVehicle indicates an expected call of GetVehicle.
+func (mr *MockStoreMockRecorder) GetVehicle(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVehicle", reflect.TypeOf((*MockStore)(nil).GetVehicle), arg0, arg1)
+}
+
+// GetWorker mocks base method.
+func (m *MockStore) GetWorker(arg0 context.Context, arg1 int64) (db.Worker, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetWorker", arg0, arg1)
+	ret0, _ := ret[0].(db.Worker)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWorker indicates an expected call of GetWorker.
+func (mr *MockStoreMockRecorder) GetWorker(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWorker", reflect.TypeOf((*MockStore)(nil).GetWorker), arg0, arg1)
+}
+
 // InsertTaskTx mocks base method.
 func (m *MockStore) InsertTaskTx(arg0 context.Context, arg1 db.CreateTaskParams) (db.Task, error) {
 	m.ctrl.T.Helper()
@@ -170,6 +230,21 @@ func (mr *MockStoreMockRecorder) InsertTaskTx(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertTaskTx", reflect.TypeOf((*MockStore)(nil).InsertTaskTx), arg0, arg1)
 }
 
+// ListAllCurrentTasks mocks base method.
+func (m *MockStore) ListAllCurrentTasks(arg0 context.Context) ([]db.Task, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllCurrentTasks", arg0)
+	ret0, _ := ret[0].([]db.Task)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllCurrentTasks indicates an expected call of ListAllCurrentTasks.
+func (mr *MockStoreMockRecorder) ListAllCurrentTasks(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllCurrentTasks", reflect.TypeOf((*MockStore)(nil).ListAllCurrentTasks), arg0)
+}
+
 // ListAllMCPs mocks base method.
 func (m *MockStore) ListAllMCPs(arg0 context.Context) ([]db.MCP, error) {
 	m.ctrl.T.Helper()
@@ -183,6 +258,21 @@ func (m *MockStore) ListAllMCPs(arg0 context.Context) ([]db.MCP, error) {
 func (mr *MockStoreMockRecorder) ListAllMCPs(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllMCPs", reflect.TypeOf((*MockStore)(nil).ListAllMCPs), arg0)
+}
+
+// ListAllRoutes mocks base method.
+func (m *MockStore) ListAllRoutes(arg0 context.Context) ([]db.Route, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllRoutes", arg0)
+	ret0, _ := ret[0].([]db.Route)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllRoutes indicates an expected call of ListAllRoutes.
+func (mr *MockStoreMockRecorder) ListAllRoutes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllRoutes", reflect.TypeOf((*MockStore)(nil).ListAllRoutes), arg0)
 }
 
 // ListAllVehicles mocks base method.
@@ -213,6 +303,21 @@ func (m *MockStore) ListAllWorkers(arg0 context.Context, arg1 db.WorkerType) ([]
 func (mr *MockStoreMockRecorder) ListAllWorkers(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllWorkers", reflect.TypeOf((*MockStore)(nil).ListAllWorkers), arg0, arg1)
+}
+
+// UpdateVehicleStatus mocks base method.
+func (m *MockStore) UpdateVehicleStatus(arg0 context.Context, arg1 db.UpdateVehicleStatusParams) (db.VehicleStatus, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateVehicleStatus", arg0, arg1)
+	ret0, _ := ret[0].(db.VehicleStatus)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateVehicleStatus indicates an expected call of UpdateVehicleStatus.
+func (mr *MockStoreMockRecorder) UpdateVehicleStatus(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateVehicleStatus", reflect.TypeOf((*MockStore)(nil).UpdateVehicleStatus), arg0, arg1)
 }
 
 // UpdateWorkerStatus mocks base method.

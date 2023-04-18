@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
@@ -77,5 +78,71 @@ func (server *Server) createTask(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, newTaskResponse(task))
+
+}
+
+type currentTaskResponse struct {
+	Janitor   string `json:"janitor"`
+	Collector string `json:"collector"`
+	Vehicle   string `json:"vehicle"`
+	Route     string `json:"route"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
+	Status    db.TaskStatusType `json:"status"`
+}
+
+func (server *Server) listAllCurrentTasks(ctx *gin.Context) {
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	_, err := server.store.GetBackOfficer(ctx, authPayload.BackOfficerInfo.Email)
+	if err != nil {
+		err := errors.New("no right to create Task")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+
+	}
+
+	tasks, err := server.store.ListAllCurrentTasks(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	var currentTasks []currentTaskResponse
+	for _, task := range tasks {
+		janitor, err := server.store.GetWorker(ctx, int64(task.JanitorID))
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		collector, err := server.store.GetWorker(ctx, int64(task.CollectorID))
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		vehicle, err := server.store.GetVehicle(ctx, int64(task.VehicleID))
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		route, err := server.store.GetRoute(ctx, int64(task.RouteID))
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		currentTasks = append(currentTasks, currentTaskResponse{
+			Janitor:   janitor.Name,
+			Collector: collector.Name,
+			Vehicle:   fmt.Sprintf("%s@%d", vehicle.Model, vehicle.ID),
+			Route:     fmt.Sprintf("%s - %s", route.StartLocation, route.EndLocation),
+			StartTime: task.StartTime.Format("2006-01-02 15:04:05"),
+			EndTime:   task.EndTime.Format("2006-01-02 15:04:05"),
+			Status:    task.Status,
+		})
+	}
+
+	ctx.JSON(http.StatusOK, currentTasks)
 
 }

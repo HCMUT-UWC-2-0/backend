@@ -27,7 +27,7 @@ func (server *Server) listAllMCPs(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	_, err := server.store.GetBackOfficer(ctx, authPayload.BackOfficerInfo.Email)
 	if err != nil {
-		err := errors.New("no right to get all workers")
+		err := errors.New("no right to get all mcps")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 

@@ -3,6 +3,7 @@ package seed
 import (
 	"context"
 	"fmt"
+	"log"
 
 	db "github.com/HCMUT-UWC-2-0/backend/db/sqlc"
 )
@@ -72,9 +73,14 @@ func (seed *Seed) runVehicleSeed() error {
 		},
 	}
 
-	// Insert the backofficers into the database
 	for _, b := range vehicles {
-		seed.store.CreateVehicle(context.Background(), b)
+		ctx := context.Background()
+		vehicle, _ := seed.store.CreateVehicle(ctx, b)
+		_, err := seed.store.CreateVehicleStatus(ctx, int32(vehicle.ID))
+		if err != nil {
+			log.Fatal("error: ", err)
+		}
+
 	}
 
 	fmt.Println("Vehicles seed completed.")

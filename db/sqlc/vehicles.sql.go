@@ -49,6 +49,50 @@ func (q *Queries) CreateVehicle(ctx context.Context, arg CreateVehicleParams) (V
 	return i, err
 }
 
+const createVehicleStatus = `-- name: CreateVehicleStatus :one
+INSERT INTO
+  "VehicleStatus" (
+    "vehicle_id"
+  )
+VALUES
+  ($1)
+RETURNING id, vehicle_id, status, current_fuel, created_at, updated_at
+`
+
+func (q *Queries) CreateVehicleStatus(ctx context.Context, vehicleID int32) (VehicleStatus, error) {
+	row := q.db.QueryRowContext(ctx, createVehicleStatus, vehicleID)
+	var i VehicleStatus
+	err := row.Scan(
+		&i.ID,
+		&i.VehicleID,
+		&i.Status,
+		&i.CurrentFuel,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getVehicle = `-- name: GetVehicle :one
+SELECT id, make_by, model, capacity, fuel_consumption, created_at, updated_at FROM "Vehicles" 
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetVehicle(ctx context.Context, id int64) (Vehicle, error) {
+	row := q.db.QueryRowContext(ctx, getVehicle, id)
+	var i Vehicle
+	err := row.Scan(
+		&i.ID,
+		&i.MakeBy,
+		&i.Model,
+		&i.Capacity,
+		&i.FuelConsumption,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listAllVehicles = `-- name: ListAllVehicles :many
 SELECT id, make_by, model, capacity, fuel_consumption, created_at, updated_at FROM "Vehicles" 
 ORDER BY id
@@ -83,4 +127,30 @@ func (q *Queries) ListAllVehicles(ctx context.Context) ([]Vehicle, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateVehicleStatus = `-- name: UpdateVehicleStatus :one
+UPDATE "VehicleStatus"
+SET "status" = $2
+WHERE "vehicle_id" = $1
+RETURNING id, vehicle_id, status, current_fuel, created_at, updated_at
+`
+
+type UpdateVehicleStatusParams struct {
+	VehicleID int32             `json:"vehicle_id"`
+	Status    VehicleStatusType `json:"status"`
+}
+
+func (q *Queries) UpdateVehicleStatus(ctx context.Context, arg UpdateVehicleStatusParams) (VehicleStatus, error) {
+	row := q.db.QueryRowContext(ctx, updateVehicleStatus, arg.VehicleID, arg.Status)
+	var i VehicleStatus
+	err := row.Scan(
+		&i.ID,
+		&i.VehicleID,
+		&i.Status,
+		&i.CurrentFuel,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

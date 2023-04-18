@@ -35,3 +35,8 @@ UPDATE "WorkerStatus"
 SET "status" = $2
 WHERE "worker_id" = $1
 RETURNING *;
+
+
+-- name: GetWorker :one
+SELECT * FROM "Workers" 
+WHERE id = $1 LIMIT 1;

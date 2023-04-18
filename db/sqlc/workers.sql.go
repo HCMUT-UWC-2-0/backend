@@ -89,6 +89,30 @@ func (q *Queries) CreateWorkerStatus(ctx context.Context, workerID int32) (Worke
 	return i, err
 }
 
+const getWorker = `-- name: GetWorker :one
+SELECT id, ssn, name, phone, age, worker_type, gender, date_of_birth, place_of_birth, created_at, updated_at FROM "Workers" 
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetWorker(ctx context.Context, id int64) (Worker, error) {
+	row := q.db.QueryRowContext(ctx, getWorker, id)
+	var i Worker
+	err := row.Scan(
+		&i.ID,
+		&i.Ssn,
+		&i.Name,
+		&i.Phone,
+		&i.Age,
+		&i.WorkerType,
+		&i.Gender,
+		&i.DateOfBirth,
+		&i.PlaceOfBirth,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listAllWorkers = `-- name: ListAllWorkers :many
 SELECT id, ssn, name, phone, age, worker_type, gender, date_of_birth, place_of_birth, created_at, updated_at FROM "Workers" 
 WHERE "worker_type" = $1

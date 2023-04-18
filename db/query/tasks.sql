@@ -14,3 +14,9 @@ VALUES
 RETURNING *;
 
 
+-- name: ListAllCurrentTasks :many
+SELECT * FROM "Tasks"
+WHERE "end_time" > NOW()
+ORDER BY "created_at" DESC;
+
+

@@ -48,3 +48,59 @@ func (q *Queries) CreateRoute(ctx context.Context, arg CreateRouteParams) (Route
 	)
 	return i, err
 }
+
+const getRoute = `-- name: GetRoute :one
+SELECT id, start_location, end_location, distance, estimated_time, created_at, updated_at FROM "Routes" 
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetRoute(ctx context.Context, id int64) (Route, error) {
+	row := q.db.QueryRowContext(ctx, getRoute, id)
+	var i Route
+	err := row.Scan(
+		&i.ID,
+		&i.StartLocation,
+		&i.EndLocation,
+		&i.Distance,
+		&i.EstimatedTime,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const listAllRoutes = `-- name: ListAllRoutes :many
+SELECT id, start_location, end_location, distance, estimated_time, created_at, updated_at FROM "Routes" 
+ORDER BY id
+`
+
+func (q *Queries) ListAllRoutes(ctx context.Context) ([]Route, error) {
+	rows, err := q.db.QueryContext(ctx, listAllRoutes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Route{}
+	for rows.Next() {
+		var i Route
+		if err := rows.Scan(
+			&i.ID,
+			&i.StartLocation,
+			&i.EndLocation,
+			&i.Distance,
+			&i.EstimatedTime,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

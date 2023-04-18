@@ -5,6 +5,7 @@
 package db
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"fmt"
 	"time"
@@ -98,7 +99,7 @@ type VehicleStatusType string
 
 const (
 	VehicleStatusTypeAVAILABLE VehicleStatusType = "AVAILABLE"
-	VehicleStatusTypeUSINGE    VehicleStatusType = "USINGE"
+	VehicleStatusTypeWORKING   VehicleStatusType = "WORKING"
 )
 
 func (e *VehicleStatusType) Scan(src interface{}) error {
@@ -290,7 +291,7 @@ type VehicleStatus struct {
 	ID          int64             `json:"id"`
 	VehicleID   int32             `json:"vehicle_id"`
 	Status      VehicleStatusType `json:"status"`
-	CurrentFuel string            `json:"current_fuel"`
+	CurrentFuel sql.NullString    `json:"current_fuel"`
 	CreatedAt   time.Time         `json:"created_at"`
 	UpdatedAt   time.Time         `json:"updated_at"`
 }

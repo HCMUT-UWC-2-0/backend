@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/lib/pq"
 )
@@ -55,11 +56,11 @@ func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 
 
 func (store *SQLStore) InsertTaskTx(ctx context.Context, arg CreateTaskParams) (Task, error) {
-
+	
 	var result Task
 
 	err := store.execTx(ctx, func(q *Queries) error {
-
+		
 		task, err := q.CreateTask(ctx, arg)
 		if err != nil {
 			if pqErr, ok := err.(*pq.Error); ok {
@@ -70,7 +71,7 @@ func (store *SQLStore) InsertTaskTx(ctx context.Context, arg CreateTaskParams) (
 			}
 			return err
 		}
-
+		
 		updateJanitorStatusParam := UpdateWorkerStatusParams{
 			WorkerID: int32(task.JanitorID),
 			Status:   WorkerStatusTypeWORKING,
@@ -79,16 +80,28 @@ func (store *SQLStore) InsertTaskTx(ctx context.Context, arg CreateTaskParams) (
 		if err != nil {
 			return err
 		}
-
-
-		updateCollctorStatusParam := UpdateWorkerStatusParams{
+		
+		
+		updateCollectorStatusParam := UpdateWorkerStatusParams{
 			WorkerID: int32(task.CollectorID),
 			Status:   WorkerStatusTypeWORKING,
 		}
-		_, err = q.UpdateWorkerStatus(ctx, updateCollctorStatusParam)
+		_, err = q.UpdateWorkerStatus(ctx, updateCollectorStatusParam)
 		if err != nil {
 			return err
 		}
+		
+		
+		updateVehicleStatusParam := UpdateVehicleStatusParams{
+			VehicleID: task.VehicleID,
+			Status:   VehicleStatusTypeWORKING,
+		}
+		_, err = q.UpdateVehicleStatus(ctx, updateVehicleStatusParam)
+		if err != nil {
+			log.Fatal("error: ", err)
+			return err
+		}
+
 
 		result = task
 		return nil
